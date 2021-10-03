@@ -6,4 +6,9 @@ export const productSchema = z.object({
   price: z.number().positive(`O preço do produto não pode ser negativo`),
 })
 
+export const updateProductSchema = productSchema.extend({
+  id: z.string()
+})
+
 export type ProductSchema = z.infer<typeof productSchema>
+export type UpdateProductSchema = z.infer<typeof updateProductSchema>
