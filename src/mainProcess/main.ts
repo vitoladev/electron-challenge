@@ -3,6 +3,9 @@ import { app, BrowserWindow, ipcMain as ipc } from 'electron'
 import { checkForUpdates } from './checkForUpdates'
 import { createLogger, stopLogger } from '../lib/logger'
 import { appUrl } from '../lib/paths'
+import {createProduct, deleteProduct, getAllProducts, getProductByID, updateProduct} from "./product/productService"
+import {ProductSchema, UpdateProductSchema } from "./product/schemas"
+import { connectDatabase } from "./database"
 
 const logger = createLogger(`main`)
 
@@ -28,10 +31,43 @@ for (const [key, handler] of Object.entries(handlers)) {
   ipc.handle(key, handler)
 }
 
+ipc.handle(`createProduct`, async (event, product: ProductSchema) => {
+  try {
+    await createProduct(product)
+    return { success: `Produto criado com sucesso` }
+  } catch (e) {
+    return { error: `Não foi possível criar o produto` }
+  }
+})
+
+ipc.handle(`updateProduct`, async (event, product: UpdateProductSchema) => {
+  try {
+    const { id, ...data } = product
+    await updateProduct(id, data)
+    return { success: `Produto atualizado com sucesso` }
+  } catch (e) {
+    return { error: `Não foi possível atualizar o produto` }
+  }
+})
+
+ipc.handle(`getAllProducts`, async () => getAllProducts())
+
+ipc.handle(`getProduct`, async (event, id) => getProductByID(id))
+
+ipc.handle(`deleteProduct`, async (event, id) => {
+  try {
+    await deleteProduct(id)
+    return { success: `Produto deletado com sucesso` }
+  } catch (e) {
+    return { error: `Não foi possível deletar o o produto` }
+  }
+})
+
+
 const run = async () => {
   logger.info(`Waiting for ready state...`)
+  await connectDatabase()
   await app.whenReady()
-
   await checkForUpdates()
 
   const _window = new BrowserWindow({
