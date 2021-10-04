@@ -1,7 +1,14 @@
 import productModel from "./productModel"
 import { ProductSchema } from "./schemas"
 
-export const getAllProducts = async () => productModel.find()
+export const getAllProducts = async () => {
+  const products = await productModel.find().lean()
+
+  return products.map((product) => {
+    product.id = product._id.valueOf()
+    return product
+  })
+}
 
 export const getProductByID = async (productID: string) => productModel.findOne({ _id: productID })
 
