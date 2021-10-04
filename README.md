@@ -1,6 +1,5 @@
-# electron-react-typescript
-Clone this repo to start a simple Electron app with React and Typescript.
-
+# electron-challenge
+Electron challenge developed with react + chakra ui + typescript + mongodb
 ## Installation
 
 Use yarn to install all dependencies.
