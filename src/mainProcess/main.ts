@@ -1,11 +1,11 @@
 import { app, BrowserWindow, ipcMain as ipc } from 'electron'
+import mongoose from "mongoose"
 
 import { checkForUpdates } from './checkForUpdates'
 import { createLogger, stopLogger } from '../lib/logger'
 import { appUrl } from '../lib/paths'
 import {createProduct, deleteProduct, getAllProducts, getProductByID, updateProduct} from "./product/productService"
 import {ProductSchema, UpdateProductSchema } from "./product/schemas"
-import { connectDatabase } from "./database"
 
 const logger = createLogger(`main`)
 
@@ -66,7 +66,13 @@ ipc.handle(`deleteProduct`, async (event, id) => {
 
 const run = async () => {
   logger.info(`Waiting for ready state...`)
-  await connectDatabase()
+
+  const DB_CONNECTION_STRING = `mongodb://localhost:27017/test`
+
+  await mongoose.connect(DB_CONNECTION_STRING, {
+    autoIndex: true
+  })
+  
   await app.whenReady()
   await checkForUpdates()
 
