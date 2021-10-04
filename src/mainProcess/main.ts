@@ -67,7 +67,7 @@ ipc.handle(`deleteProduct`, async (event, id) => {
 const run = async () => {
   logger.info(`Waiting for ready state...`)
 
-  const DB_CONNECTION_STRING = `mongodb://localhost:27017/test`
+  const DB_CONNECTION_STRING = `mongodb://localhost:27017/valore`
 
   await mongoose.connect(DB_CONNECTION_STRING, {
     autoIndex: true
